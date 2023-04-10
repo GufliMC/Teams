@@ -1,0 +1,121 @@
+{
+  "cmd.error.args.player": "<red>The player <dark_red>{0} <red>does not exist.",
+  "cmd.error.args.index": "<red>The index <dark_red>{0} <red>is out of bounds.",
+  "cmd.error.args.clan": "<red>The clan <dark_red>{0} <red>does not exist.",
+
+  "cmd.error.base.no.permission": "<red>You don't have permission to do that.",
+  "cmd.error.base.not.in.clan": "<red>You are not in a clan.",
+  "cmd.error.base.already.in.clan": "<red>You are already have a clan.",
+
+  "chat.button.accept": "<green><bold>ACCEPT",
+  "chat.button.accept.hover": "<GRAY><bold>CLICK TO ACCEPT",
+  "chat.button.decline": "<red><bold>DECLINE",
+  "chat.button.decline.hover": "<GRAY><bold>CLICK TO DECLINE",
+
+  "cmd.clans.create": "<gray>You created the clan <green>{0} <gray>with tag <green>{1}<gray>.",
+  "cmd.clans.create.error.name.exists": "<red>That clan name is already taken.",
+  "cmd.clans.create.error.tag.exists": "<red>That clan tag is already taken.",
+  "cmd.clans.create.error.name.format": "<red>The clan name must be alphanumeric and between 2 and 24 characters.",
+  "cmd.clans.create.error.tag.format": "<red>The clan tag must be alphpanumeric and be 2 or 3 characters.",
+
+  "cmd.clans.list": "<gray>List of clans: <green>{0}<gray>.",
+
+  "cmd.clans.invite.error.already.invited": "<red>This player is already invited to join your clan.",
+  "cmd.clans.invite.error.already.in.clan": "<red>This player is already in a clan.",
+  "cmd.clans.invite.error.max.members": "<red>Your clan has reached the maximum amount of members.",
+  "cmd.clans.invite.sender": "<gray>You have invited <green>{0} <gray>to join your clan.",
+  "cmd.clans.invite.target": "<green>{0} <gray>has invited you to join <green>{1}<gray>.",
+
+  "cmd.clans.uninvite.error.not.invited": "<red>This player is not invited to join your clan.",
+  "cmd.clans.uninvite.sender": "<gray>You have uninvited <green>{0} <gray>from joining your clan.",
+
+  "cmd.clans.join.error.missing": "<red>You don't have an invite to join this clan.",
+  "cmd.clans.join.error.max.members": "<red>This clan has reached the maximum amount of members.",
+  "cmd.clans.join": "<gray>You joined <green>{0}<gray>.",
+
+  "events.clan.join": "<green>{0} <gray>has joined your clan.",
+
+  "cmd.clans.reject": "<gray>You have rejected the invite for <green>{0}<gray>.",
+  "cmd.clans.reject.sender": "<green>{0} <gray>has denied your clan invite.",
+
+  "cmd.clans.quit": "<gray>You have quit your clan.",
+  "cmd.clans.quit.error.leader": "<red>You cant quit your clan, use <dark_red>/clans disband <red>instead.",
+
+  "cmd.clans.disband": "<gray>Your clan has been disbanded.",
+
+  "cmd.clans.kick.error.not.in.clan": "<red>This player is not in your clan.",
+  "cmd.clans.kick.sender": "<gray>You have kicked <green>{0} <gray>from your clan.",
+  "cmd.clans.kick.target": "<gray>You have been kicked from your clan.",
+
+  "cmd.clans.perms.error.not.in.clan": "<red>This player is not in your clan.",
+  "cmd.clans.perms.error.not.leader": "<red>You are not the leader of this clan.",
+  "cmd.clans.perms.error.self": "<red>You can't change your own permissions.",
+
+  "cmd.clans.info.not-found": "<red>No clan or player with the given name exists.",
+
+  "menu.items.back.name": "<red>Back",
+  "menu.items.back.lore": "<gray>Go to the previous menu.",
+
+  "menu.main.title": "Main clans menu",
+  "menu.main.clan.lore": "<gray>Click to check your own clan information",
+  "menu.main.clanList.name": "<green>List of clans",
+  "menu.main.clanList.lore": "<gray>Click to view a list of all clans",
+  "menu.main.profile.lore": "<gray>Click to check your own profile information",
+  "menu.main.profileList.name": "<green>List of players",
+  "menu.main.profileList.lore": "<gray>Click to view a list of all online players",
+
+  "menu.clanList.title": "List of clans ({0}/{1})",
+  "menu.clanList.clan.lore": "<gray>Click to view the information of <dark_gray>{0}<gray>.",
+
+  "menu.profileList.title": "List of online players ({0}/1})",
+  "menu.profileList.profile.lore": "<gray>Left click to view the information of <dark_gray>{0}<gray>.",
+
+  "menu.clan.title": "Information of {0}",
+  "menu.clan.info.lore": "<gray>Created on: <gold>{0}",
+  "menu.clan.members.name": "<green>Members <gold>({0}/{1})",
+  "menu.clan.members.lore": "<gray>Click to view the members of <dark_gray>{0}<gray>.",
+  "menu.clan.storage.name": "<green>Clan storage",
+  "menu.clan.storage.lore": "<gray>Click to access the clan storage of <dark_gray>{0}<gray>.",
+  "menu.clan.vault.name": "<green>Clan vault",
+  "menu.clan.vault.lore": "<gray>Click to access the clan vault of <dark_gray>{0}<gray>.",
+  "menu.clan.change-crest.name": "<green>Change crest",
+  "menu.clan.change-crest.lore": "<gray>Click to change the crest of <dark_gray>{0}<gray>.",
+
+  "menu.clan.members.title": "Members of {0} ({1}/{2})",
+  "menu.clan.members.profile.lore": "<gray>Left click to view the information of <dark_gray>{0}<gray>.",
+
+  "menu.profile.title": "Profile of {0}",
+  "menu.profile.info.lore": "<gray>Joined on: <gold>{0}",
+  "menu.profile.clan.lore": "<gray>Click to view the information of <dark_gray>{0}<gray>.",
+  "menu.profile.kick.name": "<red>Kick player",
+  "menu.profile.kick.lore": "<gray>Click to kick <dark_gray>{0}<gray> from your clan.",
+  "menu.profile.invite.name": "<green>Invite player",
+  "menu.profile.invite.lore": "<gray>Click to invite <dark_gray>{0}<gray> to your clan.",
+
+  "menu.profile.invite.confirm.title": "Invite {0} to your clan?",
+  "menu.profile.kick.confirm.title": "Kick {0} from your clan?",
+
+  "menu.clan.change-crest.title": "Change clan crest",
+  "menu.clan.change-crest.preview.name": "<green>Crest preview",
+  "menu.clan.change-crest.primary-color.name": "<green>Change primary color",
+  "menu.clan.change-crest.primary-color.lore": "<gray>Click to change the primary\n<gray>color of your clan.\n\n<gray>Current: <yellow>{0}",
+  "menu.clan.change-crest.secondary-color.name": "<green>Change secondary color",
+  "menu.clan.change-crest.secondary-color.lore": "<gray>Click to change the secondary\n<gray>color of your clan.\n\n<gray>Current: <yellow>{0}",
+  "menu.clan.change-crest.color-toggle.name": "<green>Swap colors",
+  "menu.clan.change-crest.color-toggle.lore": "<gray>Swap usage of primary and \n<gray>secondary colors.\n\n<gray>Secondary color: <yellow>{0}",
+  "menu.clan.change-crest.type.name": "<green>Change type",
+  "menu.clan.change-crest.type.lore": "<gray>Click to change the type\n<gray> of your clan crest.",
+  "menu.clan.change-crest.type.title": "Change clan crest type",
+  "menu.clan.change-crest.color.title": "Change clan crest color",
+
+  "menu.clan.permissions.title": "Permissions for {0}",
+  "menu.clan.permissions.status": "<gray>Status: {0}",
+  "menu.clan.permissions.allowed": "<green>Allowed",
+  "menu.clan.permissions.denied": "<red>Denied",
+  "menu.clans.permission.change.crest": "<green>Change clan crest",
+  "menu.clans.permission.invite.player": "<green>Invite players",
+  "menu.clans.permission.kick.player": "<green>Kick players",
+  "menu.clans.permission.access.storage": "<green>Access clan storage",
+  "menu.clans.permission.access.vault": "<green>Access clan vault"
+
+}

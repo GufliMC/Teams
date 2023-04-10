@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api 'net.kyori:adventure-api:4.+'
+    api 'cloud.commandframework:cloud-core:+'
+    api 'com.guflimc.brick.orm:api:+'
+
+    compileOnly 'com.guflimc.brick.i18n:api:+'
+}

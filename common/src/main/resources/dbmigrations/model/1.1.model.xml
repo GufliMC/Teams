@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <addColumn tableName="teams">
+            <column name="member_limit" type="integer" defaultValue="10" notnull="true"/>
+        </addColumn>
+    </changeSet>
+    <changeSet type="pendingDrops">
+        <dropColumn columnName="max_members" tableName="teams"/>
+        <dropColumn columnName="power" tableName="clan_profiles"/>
+    </changeSet>
+</migration>

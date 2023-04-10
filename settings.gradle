@@ -1,0 +1,6 @@
+rootProject.name = 'Teams'
+
+include 'api'
+include 'common'
+include 'spigot'
+include 'spigot-api'

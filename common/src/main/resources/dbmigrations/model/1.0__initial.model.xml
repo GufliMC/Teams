@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="teams" identityType="external" pkName="pk_clans">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="name" type="varchar" notnull="true" unique="uq_clans_name"/>
+            <column name="tag" type="varchar" notnull="true" unique="uq_clans_tag"/>
+            <column name="rgb_color" type="integer" defaultValue="16581375" notnull="true"/>
+            <column name="max_members" type="integer" defaultValue="10" notnull="true"/>
+            <column name="crest_template_id" type="uuid" references="crest_templates.id" foreignKeyName="fk_clans_crest_template_id" foreignKeyIndex="ix_clans_crest_template_id" foreignKeyOnDelete="SET_NULL" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="crest_config" type="varchar(8192)"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="updated_at" type="timestamp" notnull="true"/>
+        </createTable>
+        <createTable name="clan_attributes" identityType="external" pkName="pk_clan_attributes">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="name" type="varchar" notnull="true"/>
+            <column name="attrvalue" type="varchar" notnull="true"/>
+            <column name="clan_id" type="uuid" notnull="true" references="teams.id" foreignKeyName="fk_clan_attributes_clan_id" foreignKeyIndex="ix_clan_attributes_clan_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <uniqueConstraint name="uq_clan_attributes_clan_id_name" columnNames="clan_id,name" oneToOne="false" nullableColumns=""/>
+        </createTable>
+        <createTable name="clan_invites" identityType="external" pkName="pk_clan_invites">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="sender_id" type="uuid" notnull="true" references="profiles.id" foreignKeyName="fk_clan_invites_sender_id" foreignKeyIndex="ix_clan_invites_sender_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="target_id" type="uuid" notnull="true" references="profiles.id" foreignKeyName="fk_clan_invites_target_id" foreignKeyIndex="ix_clan_invites_target_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="clan_id" type="uuid" notnull="true" references="teams.id" foreignKeyName="fk_clan_invites_clan_id" foreignKeyIndex="ix_clan_invites_clan_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="rejected" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="accepted" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="cancelled" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+        </createTable>
+        <createTable name="clan_profiles" identityType="external" pkName="pk_clan_profiles">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="profile_id" type="uuid" notnull="true" references="profiles.id" foreignKeyName="fk_clan_profiles_profile_id" foreignKeyIndex="ix_clan_profiles_profile_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="clan_id" type="uuid" notnull="true" references="teams.id" foreignKeyName="fk_clan_profiles_clan_id" foreignKeyIndex="ix_clan_profiles_clan_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="leader" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="active" type="boolean" defaultValue="true" notnull="true"/>
+            <column name="power" type="float" defaultValue="0" notnull="true"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="updated_at" type="timestamp" notnull="true"/>
+        </createTable>
+        <createTable name="clan_profile_permissions" identityType="external" pkName="pk_clan_profile_permissions">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="clan_profile_id" type="uuid" notnull="true" references="clan_profiles.id" foreignKeyName="fk_clan_profile_permissions_clan_profile_id" foreignKeyIndex="ix_clan_profile_permissions_clan_profile_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="permkey" type="varchar"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="updated_at" type="timestamp" notnull="true"/>
+        </createTable>
+        <createTable name="crest_templates" identityType="external" pkName="pk_crest_templates">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="name" type="varchar" notnull="true" unique="uq_crest_templates_name"/>
+            <column name="type" type="varchar(8192)" notnull="true"/>
+            <column name="restricted" type="boolean" defaultValue="false" notnull="true"/>
+        </createTable>
+        <createTable name="profiles" identityType="external" pkName="pk_profiles">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="name" type="varchar" notnull="true"/>
+            <column name="clan_profile_id" type="uuid" uniqueOneToOne="uq_profiles_clan_profile_id" references="clan_profiles.id" foreignKeyName="fk_profiles_clan_profile_id" foreignKeyOnDelete="SET_NULL" foreignKeyOnUpdate="RESTRICT"/>
+            <column name="last_seen_at" type="timestamp"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+            <column name="updated_at" type="timestamp" notnull="true"/>
+        </createTable>
+        <createTable name="profile_attributes" identityType="external" pkName="pk_profile_attributes">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="name" type="varchar" notnull="true"/>
+            <column name="attrvalue" type="varchar" notnull="true"/>
+            <column name="profile_id" type="uuid" notnull="true" references="profiles.id" foreignKeyName="fk_profile_attributes_profile_id" foreignKeyIndex="ix_profile_attributes_profile_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
+            <uniqueConstraint name="uq_profile_attributes_profile_id_name" columnNames="profile_id,name" oneToOne="false" nullableColumns=""/>
+        </createTable>
+    </changeSet>
+</migration>
