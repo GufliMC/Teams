@@ -3,17 +3,17 @@ package com.guflimc.clans.spigot;
 import com.guflimc.brick.gui.spigot.item.ItemStackBuilder;
 import com.guflimc.teams.api.crest.CrestType;
 import com.guflimc.teams.api.domain.Team;
-import com.guflimc.teams.common.AbstractClanManager;
-import com.guflimc.teams.common.ClansDatabaseContext;
+import com.guflimc.teams.common.AbstractTeamManager;
+import com.guflimc.teams.common.TeamsDatabaseContext;
 import com.guflimc.clans.spigot.api.SpigotClanManager;
 import com.guflimc.clans.spigot.util.ClanTools;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class SpigotBrickClanManager extends AbstractClanManager implements SpigotClanManager {
+public class SpigotBrickTeamManager extends AbstractTeamManager implements SpigotClanManager {
 
-    public SpigotBrickClanManager(ClansDatabaseContext databaseContext) {
-        super(databaseContext);
+    public SpigotBrickTeamManager(TeamsDatabaseContext databaseContext) {
+        super(config, databaseContext);
         setupCrests();
     }
 

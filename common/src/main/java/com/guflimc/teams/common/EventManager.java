@@ -2,6 +2,7 @@ package com.guflimc.teams.common;
 
 import com.guflimc.teams.api.domain.Team;
 import com.guflimc.teams.api.domain.Profile;
+import com.guflimc.teams.api.domain.traits.TeamInviteTrait;
 
 public abstract class EventManager {
 
@@ -17,10 +18,10 @@ public abstract class EventManager {
 
     public abstract void onLeave(Profile profile, Team team);
 
-    public abstract void onInvite(Profile profile, Team team);
+    public abstract void onInviteSent(TeamInviteTrait.TeamInvite invite);
 
-    public abstract void onInviteDelete(Profile profile, Team team);
+    public abstract void onInviteCancel(TeamInviteTrait.TeamInvite invite);
 
-    public abstract void onInviteReject(Profile profile, Team team);
+    public abstract void onInviteDecline(TeamInviteTrait.TeamInvite invite);
 
 }

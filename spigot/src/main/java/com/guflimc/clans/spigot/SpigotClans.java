@@ -10,10 +10,10 @@ import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.brick.scheduler.spigot.api.SpigotScheduler;
 import com.guflimc.teams.api.domain.Team;
 import com.guflimc.teams.api.domain.Profile;
-import com.guflimc.teams.common.ClansConfig;
-import com.guflimc.teams.common.ClansDatabaseContext;
+import com.guflimc.teams.common.config.TeamsConfig;
+import com.guflimc.teams.common.TeamsDatabaseContext;
 import com.guflimc.teams.common.EventManager;
-import com.guflimc.teams.common.commands.ClanCommands;
+import com.guflimc.teams.common.commands.TeamCommands;
 import com.guflimc.teams.common.commands.arguments.ClanArgument;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.chat.ClanChat;
@@ -39,16 +39,16 @@ public class SpigotClans extends JavaPlugin {
 
     public static SpigotScheduler scheduler;
 
-    private ClansDatabaseContext databaseContext;
-    public SpigotBrickClanManager clanManager;
+    private TeamsDatabaseContext databaseContext;
+    public SpigotBrickTeamManager clanManager;
 
-    public ClansConfig config;
+    public TeamsConfig config;
     public BukkitAudiences adventure;
 
     @Override
     public void onEnable() {
         // CONFIG
-        config = TomlConfig.load(getDataFolder().toPath().resolve("config.toml"), new ClansConfig());
+        config = TomlConfig.load(getDataFolder().toPath().resolve("config.toml"), new TeamsConfig());
 
         // GUI
         SpigotBrickGUI.register(this);
@@ -57,18 +57,18 @@ public class SpigotClans extends JavaPlugin {
         adventure = BukkitAudiences.create(this);
 
         // DATABASE
-        databaseContext = new ClansDatabaseContext(config.database);
+        databaseContext = new TeamsDatabaseContext(config.database);
 
         // EVENT MANAGER
         EventManager.INSTANCE = new SpigotEventManager();
 
         // CLAN MANAGER
-        clanManager = new SpigotBrickClanManager(databaseContext);
+        clanManager = new SpigotBrickTeamManager(databaseContext);
         SpigotClanAPI.register(clanManager);
 
         // LOAD PLAYERS
         CompletableFuture.allOf(Bukkit.getServer().getOnlinePlayers().stream()
-                .map(p -> clanManager.load(p.getUniqueId(), p.getName()))
+                .map(p -> clanManager.login(p.getUniqueId(), p.getName()))
                 .toArray(CompletableFuture[]::new)).join();
 
         // TRANSLATIONS
@@ -138,7 +138,7 @@ public class SpigotClans extends JavaPlugin {
             annotationParser.getParameterInjectorRegistry().registerInjector(Profile.class,
                     (context, annotationAccessor) -> clanManager.findCachedProfile(((Player) context.getSender()).getUniqueId()).orElseThrow());
 
-            annotationParser.parse(new ClanCommands(adventure));
+            annotationParser.parse(new TeamCommands(adventure));
             annotationParser.parse(new SpigotClanCommands(this));
             annotationParser.parse(new SpigotCrestCommands(this));
         } catch (Exception e) {

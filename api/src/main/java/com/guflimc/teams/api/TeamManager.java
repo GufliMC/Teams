@@ -1,9 +1,6 @@
 package com.guflimc.teams.api;
 
-import com.guflimc.teams.api.domain.Profile;
-import com.guflimc.teams.api.domain.Team;
-import com.guflimc.teams.api.domain.Membership;
-import com.guflimc.teams.api.domain.TeamTrait;
+import com.guflimc.teams.api.domain.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -18,13 +15,13 @@ public interface TeamManager {
 
     // teams
 
-    Collection<Team> teams();
+    Collection<Team> teams(@NotNull TeamType type);
 
-    Optional<Team> team(@NotNull String name);
+    Optional<Team> team(@NotNull TeamType type, @NotNull String name);
 
-    Optional<Team> team(@NotNull UUID id);
+    Optional<Team> team(@NotNull TeamType type, @NotNull UUID id);
 
-    CompletableFuture<Team> create(@NotNull String name);
+    CompletableFuture<Team> create(@NotNull TeamType type, @NotNull String name);
 
     CompletableFuture<Void> remove(@NotNull Team team);
 
@@ -42,20 +39,6 @@ public interface TeamManager {
 
     //
 
-    /**
-     * Add a trait to a team, make sure traits do not cause unwanted
-     * side effects to other teams or the state of the program.
-     */
-    void addTrait(@NotNull Team team, @NotNull TeamTrait trait);
-
-    /**
-     * Remove a trait from a team, make sure traits do not cause unwanted
-     * side effects to other teams or the state of the program.
-     */
-    void removeTrait(@NotNull Team team, @NotNull TeamTrait trait);
-
-    //
-
-//    CompletableFuture<Void> update(@NotNull Membership membership);
+    CompletableFuture<Void> update(@NotNull Membership membership);
 
 }

@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface TeamInviteTrait extends TeamTrait {
 
@@ -21,15 +20,13 @@ public interface TeamInviteTrait extends TeamTrait {
 
     interface TeamInvite {
 
-        UUID id();
+        Profile sender();
 
-        UUID sender();
-
-        UUID target();
+        Profile target();
 
         Team team();
 
-        void reject();
+        void decline();
 
         void accept();
 
@@ -37,14 +34,14 @@ public interface TeamInviteTrait extends TeamTrait {
 
         boolean isExpired();
 
-        boolean isRejected();
+        boolean isDeclined();
 
         boolean isAccepted();
 
         boolean isCancelled();
 
         default boolean isAnswered() {
-            return isRejected() || isAccepted();
+            return isDeclined() || isAccepted();
         }
 
         default boolean isActive() {

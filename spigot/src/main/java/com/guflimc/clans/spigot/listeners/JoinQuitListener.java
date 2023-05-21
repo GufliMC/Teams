@@ -21,12 +21,12 @@ public class JoinQuitListener implements Listener {
             return;
         }
 
-        plugin.clanManager.load(event.getUniqueId(), event.getName()).join();
+        plugin.clanManager.login(event.getUniqueId(), event.getName()).join();
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        plugin.clanManager.unload(event.getPlayer().getUniqueId());
+        plugin.clanManager.logout(event.getPlayer().getUniqueId());
     }
 
 }

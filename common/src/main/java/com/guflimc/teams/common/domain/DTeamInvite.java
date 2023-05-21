@@ -1,13 +1,14 @@
 package com.guflimc.teams.common.domain;
 
-import com.guflimc.teams.api.domain.Team;
-import com.guflimc.teams.api.domain.TeamInvite;
 import com.guflimc.teams.api.domain.Profile;
+import com.guflimc.teams.api.domain.Team;
+import com.guflimc.teams.api.domain.traits.TeamInviteTrait;
 import com.guflimc.teams.common.EventManager;
 import io.ebean.annotation.ConstraintMode;
 import io.ebean.annotation.DbDefault;
 import io.ebean.annotation.DbForeignKey;
 import io.ebean.annotation.WhenCreated;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -15,12 +16,16 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
-@Table(name = "clan_invites")
-public class DTeamInvite implements TeamInvite {
+@Table(name = "team_invites")
+public class DTeamInvite implements TeamInviteTrait.TeamInvite {
 
     @Id
     @GeneratedValue
     private UUID id;
+
+    @ManyToOne(targetEntity = DTeam.class, optional = false)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
+    private DTeam team;
 
     @ManyToOne(targetEntity = DProfile.class, optional = false)
     @DbForeignKey(onDelete = ConstraintMode.CASCADE)
@@ -30,12 +35,8 @@ public class DTeamInvite implements TeamInvite {
     @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DProfile target;
 
-    @ManyToOne(targetEntity = DTeam.class, optional = false)
-    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
-    private DTeam clan;
-
     @DbDefault("false")
-    private boolean rejected;
+    private boolean declined;
 
     @DbDefault("false")
     private boolean accepted;
@@ -51,15 +52,12 @@ public class DTeamInvite implements TeamInvite {
     public DTeamInvite() {
     }
 
-    public DTeamInvite(DProfile sender, DProfile target, DTeam clan) {
+    public DTeamInvite(@NotNull DTeam team, @NotNull DProfile sender, @NotNull DProfile target) {
+        this.team = team;
         this.sender = sender;
         this.target = target;
-        this.clan = clan;
-    }
 
-    @Override
-    public UUID id() {
-        return id;
+        EventManager.INSTANCE.onInviteSent(this);
     }
 
     @Override
@@ -73,38 +71,38 @@ public class DTeamInvite implements TeamInvite {
     }
 
     @Override
-    public Team clan() {
-        return clan;
+    public Team team() {
+        return team;
     }
 
     @Override
-    public void reject() {
-        if ( isAnswered() ) {
+    public void decline() {
+        if (isAnswered()) {
             throw new IllegalStateException("This invite is already answered.");
         }
 
-        this.rejected = true;
-        EventManager.INSTANCE.onInviteReject(target, clan);
+        this.declined = true;
+        EventManager.INSTANCE.onInviteDecline(this);
     }
 
     @Override
     public void accept() {
-        if ( isAnswered() ) {
+        if (isAnswered()) {
             throw new IllegalStateException("This invite is already answered.");
         }
 
         this.accepted = true;
-        target.join(clan);
+        target.join(team);
     }
 
     @Override
     public void cancel() {
-        if ( isAnswered() ) {
+        if (isAnswered()) {
             throw new IllegalStateException("This invite is already answered.");
         }
 
         this.cancelled = true;
-        EventManager.INSTANCE.onInviteDelete(target, clan);
+        EventManager.INSTANCE.onInviteCancel(this);
     }
 
     @Override
@@ -113,8 +111,8 @@ public class DTeamInvite implements TeamInvite {
     }
 
     @Override
-    public boolean isRejected() {
-        return rejected;
+    public boolean isDeclined() {
+        return declined;
     }
 
     @Override
@@ -126,7 +124,6 @@ public class DTeamInvite implements TeamInvite {
     public boolean isCancelled() {
         return cancelled;
     }
-
 
     Instant createdAt() {
         return createdAt;

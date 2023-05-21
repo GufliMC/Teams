@@ -1,8 +1,12 @@
 package com.guflimc.teams.common.domain;
 
 import com.guflimc.teams.api.domain.Team;
+import com.guflimc.teams.api.domain.TeamAttributeKey;
 import com.guflimc.teams.api.domain.TeamTrait;
+import com.guflimc.teams.api.domain.TeamType;
+import com.guflimc.teams.api.domain.traits.TeamInviteTrait;
 import io.ebean.annotation.Formula;
+import io.ebean.annotation.Index;
 import io.ebean.annotation.WhenCreated;
 import io.ebean.annotation.WhenModified;
 import org.jetbrains.annotations.NotNull;
@@ -14,22 +18,30 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Entity
 @Table(name = "clans")
+@Index(columnNames = {"type", "name"}, unique = true)
 public class DTeam implements Team {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
+    private String type;
+
+    @Column(nullable = false)
     private String name;
 
     @Formula(select = "aggr.member_count",
-            join = "join (select cp.clan_id, count(cp.clan_id) as member_count from clan_profiles cp where cp.active = 1 group by cp.clan_id) as aggr ON ${ta}.id = aggr.clan_id")
-    public int members;
+            join = "join (select mb.team_id, count(mb.team_id) as member_count from memberships mb where mb.active = 1 group by mb.team_id) as aggr ON ${ta}.id = aggr.team_id")
+    private int members;
 
-    @OneToMany(targetEntity = DTeamAttribute.class, mappedBy = "clan",
+    @OneToMany(targetEntity = DTeamAttribute.class, mappedBy = "team",
             cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DTeamAttribute> attributes = new ArrayList<>();
+
+    @OneToMany(targetEntity = DTeamInvite.class, mappedBy = "team",
+            cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DTeamInvite> invites = new ArrayList<>();
 
     @WhenCreated
     private Instant createdAt;
@@ -46,13 +58,19 @@ public class DTeam implements Team {
     public DTeam() {
     }
 
-    public DTeam(@NotNull String name) {
+    public DTeam(@NotNull TeamType type,  @NotNull String name) {
+        this.type = type.name();
         this.name = name;
     }
 
     @Override
     public UUID id() {
         return id;
+    }
+
+    @Override
+    public TeamType type() {
+        return TeamType.of(type);
     }
 
     @Override
@@ -104,22 +122,57 @@ public class DTeam implements Team {
 
     // traits
 
+
     @Override
-    public <T extends TeamTrait> boolean hasTrait(Class<T> type) {
-        return traits.containsKey(type);
+    public <T extends TeamTrait> void addTrait(T trait) {
+        if ( trait(trait.getClass()).isPresent() ) {
+            throw new IllegalArgumentException("Trait with the same type or subtype already exists already exists.");
+        }
+        traits.put(trait.getClass(), trait);
+    }
+
+    @Override
+    public <T extends TeamTrait> void removeTrait(Class<T> type) {
+        traits.remove(type);
     }
 
     @Override
     public <T extends TeamTrait> Optional<T> trait(Class<T> type) {
-        return Optional.ofNullable(type.cast(traits.get(type)));
+        if ( traits.containsKey(type) ) {
+            return Optional.of(type.cast(traits.get(type)));
+        }
+
+        for ( Class<?> cls : traits.keySet() ) {
+            if ( type.isAssignableFrom(cls) ) {
+                return Optional.of(type.cast(traits.get(cls)));
+            }
+        }
+
+        return Optional.empty();
     }
 
-    public void addTrait(TeamTrait trait) {
-        traits.put(trait.getClass(), trait);
+    // INTERNAL
+
+    public Collection<DTeamInvite> invites() {
+        return Collections.unmodifiableCollection(invites);
     }
 
-    public void removeTrait(Class<? extends TeamTrait> type) {
-        traits.remove(type);
+    public void addInvite(@NotNull DProfile sender, @NotNull DProfile target) {
+        invites.add(new DTeamInvite(this, sender, target));
+    }
+
+    public void removeInvite(@NotNull DTeamInvite invite) {
+        invites.remove(invite);
+    }
+
+    public Optional<DTeamInvite> invite(@NotNull DProfile target) {
+        return invites.stream()
+                .filter(invite -> invite.target().equals(target))
+                .max(Comparator.comparing(DTeamInvite::createdAt));
+    }
+
+    public void setMembers(int members) {
+        this.members = members;
     }
 
 }

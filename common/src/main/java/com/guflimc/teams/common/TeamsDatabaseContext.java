@@ -3,9 +3,6 @@ package com.guflimc.teams.common;
 import com.guflimc.brick.orm.ebean.database.EbeanConfig;
 import com.guflimc.brick.orm.ebean.database.EbeanDatabaseContext;
 import com.guflimc.brick.orm.ebean.database.EbeanMigrations;
-import com.guflimc.teams.common.converters.CrestConfigConverter;
-import com.guflimc.teams.common.converters.CrestTypeConverter;
-import com.guflimc.clans.common.domain.*;
 import com.guflimc.teams.common.domain.*;
 import io.ebean.annotation.Platform;
 
@@ -14,15 +11,15 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-public class ClansDatabaseContext extends EbeanDatabaseContext {
+public class TeamsDatabaseContext extends EbeanDatabaseContext {
 
-    private final static String DATASOURCE_NAME = "Clans";
+    private final static String DATASOURCE_NAME = "Teams";
 
-    public ClansDatabaseContext(EbeanConfig config) {
+    public TeamsDatabaseContext(EbeanConfig config) {
         super(config, DATASOURCE_NAME);
     }
 
-    public ClansDatabaseContext(EbeanConfig config, int poolSize) {
+    public TeamsDatabaseContext(EbeanConfig config, int poolSize) {
         super(config, DATASOURCE_NAME, poolSize);
     }
 
@@ -34,21 +31,18 @@ public class ClansDatabaseContext extends EbeanDatabaseContext {
     private static final Class<?>[] APPLICABLE_CLASSES = new Class[]{
             DTeam.class,
             DMembership.class,
+            DMembershipAttribute.class,
             DProfile.class,
-            DTeamInvite.class,
-            DClanProfilePermission.class,
-            DCrestTemplate.class,
-            DTeamAttribute.class,
             DProfileAttribute.class,
-
-            CrestTypeConverter.class,
-            CrestConfigConverter.class
+            DTeamInvite.class,
+            DTeamAttribute.class,
+            DTeamInvite.class
     };
 
     public static void main(String[] args) throws IOException, SQLException {
         EbeanMigrations generator = new EbeanMigrations(
                 DATASOURCE_NAME,
-                Path.of("Clans/common/src/main/resources"),
+                Path.of("Teams/common/src/main/resources"),
                 Platform.H2, Platform.MYSQL
         );
         Arrays.stream(APPLICABLE_CLASSES).forEach(generator::addClass);

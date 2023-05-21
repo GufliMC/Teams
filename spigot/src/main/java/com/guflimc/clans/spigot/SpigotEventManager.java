@@ -45,12 +45,12 @@ public class SpigotEventManager extends EventManager {
     }
 
     @Override
-    public void onInviteDelete(Profile profile, Team team) {
+    public void onInviteCancel(Profile profile, Team team) {
         wrap(() -> new ProfileClanInviteDeleteEvent(team, profile, !Bukkit.isPrimaryThread()));
     }
 
     @Override
-    public void onInviteReject(Profile profile, Team team) {
+    public void onInviteDecline(Profile profile, Team team) {
         wrap(() -> new ProfileClanInviteRejectEvent(team, profile, !Bukkit.isPrimaryThread()));
     }
 

@@ -1,9 +1,6 @@
 package com.guflimc.teams.common.domain;
 
-import com.guflimc.teams.api.domain.Team;
-import com.guflimc.teams.api.domain.TeamInvite;
-import com.guflimc.teams.api.domain.Membership;
-import com.guflimc.teams.api.domain.Profile;
+import com.guflimc.teams.api.domain.*;
 import com.guflimc.teams.common.EventManager;
 import io.ebean.annotation.ConstraintMode;
 import io.ebean.annotation.*;
@@ -27,7 +24,7 @@ public class DProfile implements Profile {
             orphanRemoval = true, cascade = CascadeType.ALL)
     @Where(clause = "active = 1")
     @DbForeignKey(onDelete = ConstraintMode.SET_NULL)
-    List<DMembership> memberships;
+    private List<DMembership> memberships;
 
     @OneToMany(targetEntity = DProfileAttribute.class, mappedBy = "profile",
             cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -67,6 +64,14 @@ public class DProfile implements Profile {
     }
 
     @Override
+    public Optional<Membership> membership(@NotNull TeamType type) {
+        return memberships.stream()
+                .filter(m -> m.team().type().equals(type))
+                .map(m -> (Membership) m)
+                .findFirst();
+    }
+
+    @Override
     public Optional<Membership> membership(@NotNull Team team) {
         return memberships.stream()
                 .filter(m -> m.team().equals(team))
@@ -87,12 +92,18 @@ public class DProfile implements Profile {
 
     @Override
     public void join(@NotNull Team team) {
-        // leave previous clan
-        clanProfile().ifPresent(Membership::quit);
+        if ( membership(team).isPresent() ) {
+            throw new IllegalArgumentException("Already a member of this team.");
+        }
+        if ( membership(team.type()).isPresent() ) {
+            throw new IllegalArgumentException("Already a member of another team with the same type.");
+        }
 
-        // join new clan
-        clanProfile = new DMembership(this, (DTeam) team);
-        ((DTeam) team).memberCount++;
+        // join new team
+        DMembership membership = new DMembership(this, (DTeam) team);
+        memberships.add(membership);
+
+        ((DTeam) team).setMembers(team.members() + 1);
 
         EventManager.INSTANCE.onJoin(this, team);
     }
@@ -110,7 +121,7 @@ public class DProfile implements Profile {
                 .filter(attr -> attr.name().equals(key.name()))
                 .findFirst().orElse(null);
 
-        if ( attribute == null ) {
+        if (attribute == null) {
             attributes.add(new DProfileAttribute(this, key, value));
             return;
         }
@@ -127,6 +138,12 @@ public class DProfile implements Profile {
     public <T> Optional<T> attribute(ProfileAttributeKey<T> key) {
         return attributes.stream().filter(attr -> attr.name().equals(key.name()))
                 .findFirst().map(ra -> ra.value(key));
+    }
+
+    // INTERNAL
+
+    public void removeMembership(DMembership membership) {
+        memberships.remove(membership);
     }
 
 }
